@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tool http://www.springframework.org/schema/tool/spring-tool.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:jdbc.properties"/>
+    </bean>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!-- 初始化新分支 -->
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <!-- 连接池最大数量 -->
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <!-- 连接池最大空闲 -->
+        <property name="maxIdle" value="${jdbc.initialSize}"/>
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+        <!-- 获取连接最大等待时间 -->
+        <property name="maxWait" value="${jdbc.maxWait}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--<property name="configLocation" value="classpath:mybatis-config.xmk"/>-->
+        <property name="mapperLocations" value="classpath:mybatis/*.xml"/>
+    </bean>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <!--<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+    <!--</bean>-->
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.my.app.mapper"/>
+        <property name="markerInterface" value="com.my.app.mapper.BaseMapper"/>
+    </bean>
+
+    <!--<tx:annotation-driven transaction-manager="txManager"/>-->
+
+    <!--&lt;!&ndash;事务隔离级别、拦截器&ndash;&gt;-->
+    <!--<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">-->
+        <!--<property name="transactionManager" ref="txManager"/>-->
+        <!--<property name="transactionAttributes">-->
+            <!--<props>-->
+                <!--<prop key="insert*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="create*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="cancel*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="login*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="confirm*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="submit*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="finish*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="save*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="add*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="update*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="remove*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="delete*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="change*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="unbind*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="resolved*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="do*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="next*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="handle*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="set*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="reset*">PROPAGATION_REQUIRED</prop>-->
+                <!--<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>-->
+                <!--<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>-->
+                <!--<prop key="load*">PROPAGATION_REQUIRED,readOnly</prop>-->
+                <!--<prop key="*">PROPAGATION_REQUIRED,readOnly</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+</beans>
